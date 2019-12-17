@@ -34,9 +34,9 @@ while True:
 
         try:
             name = i.find_element_by_tag_name("h2").text
-            price = i.find_element_by_class_name('a-price').text.replace('\n', '.')
+            price = float(i.find_element_by_class_name('a-price').text.replace('\n', '.').replace('£', ''))
             link = i.find_elements_by_xpath('//h2/a')[c].get_attribute("href")
-            
+            print("price", price)
         except Exception:
             break
         
