@@ -3,6 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from product import Product
 
 site_url = 'http://www.amazon.co.uk'
 
@@ -24,6 +25,7 @@ products = []
 page = 1
 
 while True:
+    should_add = False
     if page != 1:
         try:
             driver.get(driver.current_url + "&page" + str(page))
@@ -36,11 +38,28 @@ while True:
             name = i.find_element_by_tag_name("h2").text
             price = float(i.find_element_by_class_name('a-price').text.replace('\n', '.').replace('£', ''))
             link = i.find_elements_by_xpath('//h2/a')[c].get_attribute("href")
-            print("price", price)
+
+            # TODO: also need to check if this is an addon item
+            try:
+                if i.find_element_by_class_name('s-addon-highlight-color'):
+                    should_add = True
+                    
+            # clean link
+            index = link.find('ref=')
+            if index >= 0:
+                link = link[:index]
+
         except Exception:
             break
-        
+
+        product = Product(name, price, link)
+        if should_add:
+            products.append(product)
+
     page = page + 1
+    # TODO: get last page
     if page == 11:
         break
-    # print(page)
+
+for product in products:
+    print(product.serialize())
