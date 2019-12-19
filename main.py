@@ -84,10 +84,11 @@ while True:
     if page > last_page:
         break
 
+save_name = search_term.replace(' ', '_').replace('.', '_').replace(',', '_').replace('/', '_')
 # remove duplicates
 print("size of product after:", len(products))
 
-with open('products.txt', 'w') as outfile:
+with open(save_name + '.txt', 'w') as outfile:
     for i, product in enumerate(products):
         json.dump(product.serialize(), outfile)
 
