@@ -7,19 +7,6 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from product import Product
 
-# def unique(list1): 
-  
-#     # intilize a null list 
-#     unique_list = [] 
-      
-#     # traverse for all elements 
-#     for x in list1: 
-#         # check if exists in unique_list or not 
-#         if x not in unique_list: 
-#             unique_list.append(x) 
-    
-#     return unique_list
-
 site_url = 'http://www.amazon.co.uk'
 
 options = webdriver.ChromeOptions()
@@ -59,7 +46,9 @@ while True:
             name = i.find_element_by_tag_name("h2").text
             price = float(i.find_element_by_class_name('a-price').text.replace('\n', '.').replace('£', ''))
             link = i.find_elements_by_xpath('//h2/a')[c].get_attribute("href")
-           
+            image = i.find_element_by_class_name("s-image").get_attribute("src") 
+        
+
             # clean link
             index = link.find('ref=')
             if index >= 0:
@@ -76,7 +65,7 @@ while True:
             print("-- Couldn't fetch price")
             # print(i.find_element_by_tag_name("h2").text)
 
-        product = Product(name, price, link)
+        product = Product(name, price, link, image)
         if should_add:
             products.append(product)
 
@@ -85,8 +74,7 @@ while True:
         break
 
 save_name = search_term.replace(' ', '_').replace('.', '_').replace(',', '_').replace('/', '_')
-# remove duplicates
-print("size of product after:", len(products))
+print("size of product:", len(products))
 
 with open(save_name + '.txt', 'w') as outfile:
     for i, product in enumerate(products):
